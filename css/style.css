@@ -1,0 +1,158 @@
+
+body, html {
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+p{
+    font-size: 1em;
+}
+h1{
+font-size: 2em;
+}
+
+footer{
+    
+    font-weight: 300;
+    background-color: #003a41;
+    min-height: 100px;
+    color: #ffffff;
+    height: inherit;
+    margin-top: 10px;
+    margin-top: 40px;
+}
+footer a{
+    color: rgb(255, 255, 255) !important;
+}
+footer .row{
+        margin-top: 10px !important;
+}
+footer .container-fluid{
+    margin-top: 22px;
+}
+
+.row{
+    margin-top: 1.5em; 
+}
+
+nav.menu{
+    font-weight: 500;
+    background-color: #00b8b0;
+}
+
+nav.menu .navbar-nav .nav-link{
+    color: #ffffff;
+}
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+    color:#007766;
+}
+nav .user-icon{
+    color: #5a5a5a;
+    background-color: #b9b9b9;
+    border-radius: 50%;
+    width: 2.5em;
+    height: 2.5em;
+}
+nav .user-icon-padding{
+    padding-left: 0;
+}
+
+nav .user-icon:hover{
+    color:#007766;
+    background-color: #a5a5a5;
+}
+
+
+form button, [type="button"], [type="reset"], [type="submit"] {
+    -webkit-appearance: button;
+    width: max-content;
+}
+
+form input{
+    box-shadow: none;
+    border: 1px #aaa solid;
+}
+form input, button{
+    border-radius: 25px;
+    margin: auto;
+    padding: 5px;
+}
+form button{
+    border: none;
+    background-color: #57e4e0;
+    color: #ffffff;
+    padding: 8px;
+}
+
+.search-control {
+    position: absolute;
+    top: 4px;
+    left: 171px;
+    color: #20202057;
+    z-index: 2;
+    display: block;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    pointer-events: none;
+   }
+
+   .lo-border {
+    padding-bottom: 1%;
+    border-bottom: 1px solid #aaaaaa;
+    }
+
+    .admin-tool.material-icons {
+        color: #b9b9b9;
+        display: none;
+    }
+      
+      .data-row:hover .admin-tool {
+        display: inline-block;
+      }
+      
+      .data-row:hover .tool-hint {
+        display: none;
+      }
+      
+      .admin-tool.material-icons:hover {
+        color: #003a41;
+      }
+      
+      
+
+
+   input:focus{
+       border: none;
+   }
+
+
+@media (max-width:991px){
+    .offset-md-4 {
+        margin-left: 0.333333%;
+        
+    }
+    
+}
+
+@media (max-width:767px){
+    
+#id-img{
+    max-width: 245px;
+}
+
+}
+
+
+@media (max-width:991px){
+    .navbar-nav .nav-link .user-icon-padding {
+        padding-right: 0;
+        padding-left: 0.3em;
+    }
+    nav.menu{
+        font-weight: 500;
+    }
+}
