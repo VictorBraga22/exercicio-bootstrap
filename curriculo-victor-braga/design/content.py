@@ -3,11 +3,12 @@
 NAME_FIRST, NAME_LAST = "Victor", "Braga"
 ROLES = ["Graphic Designer", "Front of House", "Kitchen Hand", "Brand Ambassador"]
 
+# (rótulo, texto exibido, link)
 CONTACT = [
-    ("Location", "Brisbane QLD"),
-    ("Phone", "0451 084 505"),
-    ("Email", "victorbcsa@gmail.com"),
-    ("Portfolio", "[ADD PORTFOLIO LINK]"),
+    ("Location", "Brisbane QLD", None),
+    ("Phone", "0451 084 505", "tel:+61451084505"),
+    ("Email", "victorbcsa@gmail.com", "mailto:victorbcsa@gmail.com"),
+    ("Portfolio", "behance.net/victorbragacsa", "https://www.behance.net/victorbragacsa"),
 ]
 
 PROFILE = [

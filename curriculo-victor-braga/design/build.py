@@ -4,6 +4,8 @@
 
 Saída (na pasta acima): Victor_Braga_CV_Typographic.pdf e Victor_Braga_CV_Modernist.pdf
 Fontes: Inter (TTF estático em fonts/) — evita fontes Type 3 no PDF.
+O build falha se o PDF passar de 1 página ou se a margem inferior real do texto
+ficar abaixo de MIN_MARGIN_MM.
 """
 import html
 import re
@@ -24,6 +26,13 @@ def e(text):
     return NOBREAK.sub(lambda m: f'<span class="nw">{m.group(0)}</span>', html.escape(text))
 
 
+def link(text, href, wbr=False):
+    shown = html.escape(text)
+    if wbr:  # permite quebrar o endereço depois da barra, nunca no meio do nome
+        shown = shown.replace("/", "/<wbr>")
+    return f'<a href="{html.escape(href)}">{shown}</a>' if href else shown
+
+
 def bullet_html(b):
     if isinstance(b, tuple):
         return f"<li><strong>{e(b[0])}</strong> {e(b[1])}</li>"
@@ -39,7 +48,7 @@ FONT_FACES = "".join(
     f'src: url("fonts/Inter-{w}.ttf") format("truetype"); }}\n'
     for w in (400, 500, 600, 700))
 
-# Base comum: A4, grid de 12 colunas, Inter (grotesca suíça contemporânea).
+# Base comum: A4, Inter (grotesca suíça contemporânea), travessão como marcador.
 BASE_CSS = FONT_FACES + """
 @page { size: A4; margin: 0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -49,7 +58,7 @@ body {
   font-feature-settings: "cv11" 1;
   -webkit-font-smoothing: antialiased;
   color: #111;
-  hyphens: manual;
+  text-wrap: pretty;
 }
 .page { width: 210mm; height: 297mm; padding: var(--mt) var(--mx) var(--mb); }
 .grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gutter); }
@@ -57,43 +66,42 @@ ul { list-style: none; }
 li { position: relative; padding-left: 3mm; }
 li::before { content: "–"; position: absolute; left: 0; color: var(--muted); }
 strong { font-weight: 600; }
-.date, .meta b { font-variant-numeric: tabular-nums; }
+a { color: inherit; text-decoration: none; }
+.date, .tnum { font-variant-numeric: tabular-nums; }
 .nw { white-space: nowrap; }
+.muted { color: var(--muted); }
 h1, h2, h3 { font-weight: inherit; font-size: inherit; }
+address { font-style: normal; }
 """
 
 
 # ---------------------------------------------------------------------------
 # Versão 1 — Tipográfica: só texto, sem cor, sem linhas. Hierarquia apenas por
-# tamanho, peso, tom (preto/cinza) e espaço. Rótulos em 3/12, conteúdo em 9/12.
+# tamanho, peso, tom (preto/cinza) e espaço. Grid de 12 colunas: rótulos em
+# 3/12, conteúdo em 9/12, subdividido em terços (contato, idiomas).
+# Rótulos e conteúdo alinhados pela primeira linha de base.
 # ---------------------------------------------------------------------------
 def typographic():
     css = BASE_CSS + """
-:root { --mt: 14mm; --mb: 12mm; --mx: 17mm; --gutter: 4.5mm; --muted: #737373; }
-body { font-size: 8pt; line-height: 1.34; }
-header { align-items: end; margin-bottom: 5.8mm; }
-.name { grid-column: 1 / 10; font-weight: 600; font-size: 28pt; line-height: 1;
-        letter-spacing: -0.03em; }
-.roles { grid-column: 1 / 10; margin-top: 2.4mm; font-size: 9.6pt; color: var(--muted);
-         letter-spacing: -0.005em; }
-.contact { grid-column: 10 / 13; grid-row: 1 / 3; align-self: end; font-size: 7.8pt;
-           line-height: 1.5; }
-.contact span { display: block; }
-section { margin-top: 4.2mm; }
+:root { --mt: 14mm; --mb: 12mm; --mx: 15mm; --gutter: 4.5mm; --muted: #737373; }
+body { font-size: 8pt; line-height: 1.33; }
+.name { font-weight: 600; font-size: 29pt; line-height: 1; letter-spacing: -0.03em; }
+.roles { margin-top: 2.2mm; font-size: 9.8pt; color: var(--muted); letter-spacing: -0.005em; }
+section { margin-top: 4.2mm; align-items: baseline; }
+section.contact { margin-top: 5.6mm; }
 .label { grid-column: 1 / 4; font-size: 6.8pt; font-weight: 600; letter-spacing: 0.1em;
-         text-transform: uppercase; padding-top: 0.5mm; }
+         text-transform: uppercase; }
 .body { grid-column: 4 / 13; }
+.thirds { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--gutter); }
 .lead { font-size: 8.6pt; line-height: 1.38; letter-spacing: -0.005em; }
 .lead + .lead { margin-top: 1.6mm; }
-.job + .job { margin-top: 2.4mm; }
+.job + .job { margin-top: 2.3mm; }
 .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; }
 .job-title { font-weight: 600; font-size: 8.8pt; }
 .date { color: var(--muted); white-space: nowrap; font-size: 7.8pt; }
 .org { color: var(--muted); margin: 0.2mm 0 0.9mm; }
 li + li { margin-top: 0.5mm; }
-.inline { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--gutter); }
-.edu + .edu { margin-top: 1.2mm; }
-.muted { color: var(--muted); }
+.edu + .edu { margin-top: 1.4mm; }
 """
 
     def job(t, org, loc, date, items):
@@ -103,123 +111,131 @@ li + li { margin-top: 0.5mm; }
   {bullets(items)}
 </div>"""
 
-    def section(label, body):
-        return (f'<section class="grid"><h2 class="label">{e(label)}</h2>'
+    def section(label, body, cls=""):
+        return (f'<section class="grid {cls}"><h2 class="label">{e(label)}</h2>'
                 f'<div class="body">{body}</div></section>')
 
-    contact = "".join(f"<span>{e(v)}</span>" for _, v in C.CONTACT)
+    (_, loc, _), (_, phone, phone_href), (_, mail, mail_href), (_, folio, folio_href) = C.CONTACT
+    contact = (f'<address class="thirds"><div>{e(loc)}&nbsp;·&nbsp;{link(phone, phone_href)}</div>'
+               f'<div>{link(mail, mail_href)}</div><div>{link(folio, folio_href)}</div></address>')
     profile = "".join(f'<p class="lead">{e(p)}</p>' for p in C.PROFILE)
     edu = "".join(
         f'<div class="edu"><div class="job-head"><span class="job-title">{e(s)}</span>'
-        f'<span class="date">{e(d)}</span></div><div>{e(x)}&nbsp;<span class="muted">·&nbsp;{e(loc)}</span></div></div>'
+        f'<span class="date">{e(d)}</span></div>'
+        f'<div>{e(x)}&nbsp;<span class="muted">·&nbsp;{e(loc)}</span></div></div>'
         for s, loc, d, x in C.EDUCATION)
     langs = "".join(f"<div><strong>{e(l)}</strong> <span class='muted'>{e(v)}</span></div>"
                     for l, v in C.LANGUAGES)
 
     body = f"""
-<header class="grid">
+<header>
   <h1 class="name">{e(C.NAME_FIRST)} {e(C.NAME_LAST)}</h1>
   <div class="roles">{" / ".join(e(r) for r in C.ROLES)}</div>
-  <address class="contact" style="font-style:normal">{contact}</address>
 </header>
+{section("Contact", contact, "contact")}
 {section("Profile", profile)}
 {section("Australian Experience", "".join(job(*j) for j in C.AUSTRALIA))}
 {section("Design Experience", "".join(job(*j) for j in C.DESIGN))}
 {section("Skills", e(", ".join(C.SKILLS)) + ".")}
 {section("Education", edu)}
-{section("Languages", f'<div class="inline">{langs}</div>')}
+{section("Languages", f'<div class="thirds">{langs}</div>')}
 """
     return page(css, body)
 
 
 # ---------------------------------------------------------------------------
 # Versão 2 — Modernista: International Typographic Style (Müller-Brockmann,
-# Vignelli). Nome em display grande, régua preta forte, vermelho suíço como
-# único acento, seções numeradas, coluna de datas (3/12) + conteúdo (9/12),
-# rodapé em três colunas sobre o mesmo grid.
+# Vignelli). Composição assimétrica: coluna lateral num painel cinza que sangra
+# a página (contato, idiomas, skills, educação) e coluna principal com o nome em
+# display, seções numeradas em vermelho suíço e réguas finas. O vermelho é o
+# único acento: faixa no topo do painel e numeração.
 # ---------------------------------------------------------------------------
 def modernist():
     css = BASE_CSS + """
-:root { --mt: 14mm; --mb: 12mm; --mx: 15mm; --gutter: 4.5mm; --muted: #6b6b6b;
-        --red: #E3241B; --rule: #111;
-        /* 3 de 12 colunas + 2 gutters */
-        --accent-w: calc((100% - 11 * var(--gutter)) / 12 * 3 + 2 * var(--gutter)); }
-body { font-size: 7.8pt; line-height: 1.31; }
+:root { --mt: 16mm; --mb: 12mm; --mx: 15mm; --side: 40mm; --gap: 12mm;
+        --muted: #6b6b6b; --red: #E3241B; --panel: #F2F2F0; }
+body { font-size: 8pt; line-height: 1.36; }
+.page { position: relative; display: grid; grid-template-columns: var(--side) 1fr;
+        grid-template-rows: auto auto 1fr; column-gap: var(--gap); row-gap: 6.2mm;
+        align-items: start; }
+/* painel: sangra topo, base e esquerda; termina 5mm depois do texto lateral */
+.page::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0;
+                width: calc(var(--mx) + var(--side) + 5mm); background: var(--panel);
+                border-top: 5mm solid var(--red); }
+/* cada bloco lateral pendura na mesma linha horizontal da seção principal */
+.page > * { position: relative; }
+.m { grid-column: 2; } .s { grid-column: 1; }
+.r1 { grid-row: 1; } .r2 { grid-row: 2; } .r3 { grid-row: 3; }
+.s.r1 { padding-top: 1mm; }
+.rule { border-top: 0.75pt solid #111; padding-top: 1.6mm; }
 
-header { align-items: end; }
-.name { grid-column: 1 / 9; grid-row: 1; font-weight: 700; font-size: 34pt; line-height: 0.92;
-        letter-spacing: -0.04em; }
-.contact { grid-column: 9 / 13; grid-row: 1; align-self: end; font-size: 7.6pt; line-height: 1.5; padding-bottom: 0.4mm; }
-.contact dl { display: grid; grid-template-columns: 14mm 1fr; }
-.contact dt { color: var(--muted); }
-.rule { grid-column: 1 / 13; height: 2.4pt; margin-top: 4.5mm;
-        background: linear-gradient(90deg, var(--red) var(--accent-w), var(--rule) var(--accent-w)); }
-.roles { margin-top: 2.2mm; }
-.roles div { grid-column: span 3; font-size: 8pt; font-weight: 500; }
+.name { font-weight: 700; font-size: 44pt; line-height: 0.9; letter-spacing: -0.045em;
+        word-spacing: 0.14em;
+        margin-left: -0.6mm; }
+.roles { margin-top: 3.6mm; font-size: 9.4pt; font-weight: 500; letter-spacing: -0.005em; }
+.roles span { color: var(--red); margin: 0 1.6mm; font-weight: 400; }
 
-section { margin-top: 4mm; }
-.sec-head { grid-column: 1 / 13; display: grid; grid-template-columns: subgrid;
-            border-top: 0.6pt solid var(--rule); padding-top: 1.3mm; margin-bottom: 2.2mm; }
-.sec-num { grid-column: 1 / 4; color: var(--red); font-weight: 600; font-variant-numeric: tabular-nums; }
-.sec-title { grid-column: 4 / 13; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+section.first { margin-top: 8.4mm; }
+.sec-head { display: flex; gap: 3mm; align-items: baseline; margin-bottom: 2.8mm; font-size: 7pt; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase; }
+.sec-head, .block h2 { line-height: 1.36; }
+.sec-head .n { color: var(--red); letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.lead { font-size: 8.8pt; line-height: 1.42; letter-spacing: -0.005em; }
+.lead + .lead { margin-top: 1.6mm; }
+.job + .job { margin-top: 2.8mm; }
+.job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; }
+.job-title { font-weight: 600; font-size: 9pt; }
+.date { color: var(--muted); white-space: nowrap; font-size: 7.8pt; }
+.org { color: var(--muted); margin: 0.2mm 0 1mm; }
+li + li { margin-top: 0.5mm; }
 
-.profile p { grid-column: 4 / 13; font-size: 8.4pt; line-height: 1.4; letter-spacing: -0.005em; }
-.profile p + p { margin-top: 1.4mm; }
-
-.job { grid-column: 1 / 13; display: grid; grid-template-columns: subgrid; }
-.job + .job { margin-top: 2.1mm; }
-.meta { grid-column: 1 / 4; color: var(--muted); font-size: 7.6pt; line-height: 1.42; padding-top: 0.3mm; }
-.meta b { display: block; color: #111; font-weight: 500; }
-.detail { grid-column: 4 / 13; }
-.job-title { font-weight: 600; font-size: 8.8pt; line-height: 1.3; }
-.org { color: var(--muted); margin-bottom: 0.8mm; }
-li + li { margin-top: 0.3mm; }
-
-.footer { margin-top: 4mm; }
-.col { border-top: 0.6pt solid var(--rule); padding-top: 1.4mm; }
-.col h3 { font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2.4mm; }
-.col h3 span { color: var(--red); margin-right: 2mm; font-variant-numeric: tabular-nums; }
-.c1 { grid-column: 1 / 4; } .c2 { grid-column: 4 / 9; } .c3 { grid-column: 9 / 13; }
-.edu + .edu { margin-top: 1.6mm; }
-.muted { color: var(--muted); }
-.langs div, .row { display: flex; justify-content: space-between; gap: 3mm; }
+.block + .block { margin-top: 7mm; }
+.block h2 { font-size: 7pt; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+            margin-bottom: 2.6mm; }
+.block dl dt { color: var(--muted); font-size: 7pt; }
+.block dl dd + dt { margin-top: 1.6mm; }
+.langs div { display: flex; justify-content: space-between; }
+.langs div + div { margin-top: 0.6mm; }
+.s li { padding-left: 0; } .s li::before { content: none; }
+.s li + li { margin-top: 0.6mm; }
+.edu + .edu { margin-top: 2.4mm; }
 """
 
     def job(t, org, loc, date, items):
         return f"""<div class="job">
-  <div class="meta"><b>{e(date)}</b>{e(loc)}</div>
-  <div class="detail"><div class="job-title">{e(t)}</div><div class="org">{e(org)}</div>{bullets(items)}</div>
+  <div class="job-head"><span class="job-title">{e(t)}</span><span class="date">{e(date)}</span></div>
+  <div class="org">{e(org)}, {e(loc)}</div>
+  {bullets(items)}
 </div>"""
 
-    def sec_head(n, title):
-        return (f'<div class="sec-head"><span class="sec-num">{n:02d}</span>'
-                f'<h2 class="sec-title">{e(title)}</h2></div>')
+    def sec_rule(n, title, body, cls):
+        return (f'<section class="rule {cls}"><h2 class="sec-head"><span class="n">{n:02d}</span>'
+                f'{e(title)}</h2>{body}</section>')
 
-    contact = "".join(f"<dt>{e(k)}</dt><dd>{e(v)}</dd>" for k, v in C.CONTACT)
-    roles = "".join(f"<div>{e(r)}</div>" for r in C.ROLES)
-    profile = "".join(f"<p>{e(p)}</p>" for p in C.PROFILE)
-    skills = e(", ".join(C.SKILLS)) + "."
-    edu = "".join(
-        f'<div class="edu"><div class="row"><strong>{e(s)}</strong><span class="muted date">{e(d)}</span></div>'
-        f'<div>{e(x)}&nbsp;<span class="muted">·&nbsp;{e(loc)}</span></div></div>' for s, loc, d, x in C.EDUCATION)
+    contact = "".join(f"<dt>{e(k)}</dt><dd>{link(v, h, wbr=True)}</dd>" for k, v, h in C.CONTACT)
     langs = "".join(f"<div><span>{e(l)}</span><span class='muted'>{e(v)}</span></div>"
                     for l, v in C.LANGUAGES)
+    skills = "".join(f"<li>{e(s[:1].upper() + s[1:])}</li>" for s in C.SKILLS)
+    edu = "".join(
+        f'<div class="edu"><strong>{e(s)}</strong><div class="muted tnum">{e(d)}<br>{e(loc)}</div>'
+        f'<div>{e(x)}</div></div>' for s, loc, d, x in C.EDUCATION)
+    profile = "".join(f'<p class="lead">{e(p)}</p>' for p in C.PROFILE)
+    roles = '<span>/</span>'.join(e(r) for r in C.ROLES)
 
     body = f"""
-<header class="grid">
-  <h1 class="name">{e(C.NAME_FIRST)}<br>{e(C.NAME_LAST)}</h1>
-  <div class="contact"><dl>{contact}</dl></div>
-  <div class="rule" aria-hidden="true"></div>
-</header>
-<div class="grid roles">{roles}</div>
-<section class="grid profile">{sec_head(1, "Profile")}{profile}</section>
-<section class="grid">{sec_head(2, "Australian Experience")}{"".join(job(*j) for j in C.AUSTRALIA)}</section>
-<section class="grid">{sec_head(3, "Design Experience")}{"".join(job(*j) for j in C.DESIGN)}</section>
-<div class="grid footer">
-  <div class="col c1 langs"><h3><span>04</span>Languages</h3>{langs}</div>
-  <div class="col c2"><h3><span>05</span>Education</h3>{edu}</div>
-  <div class="col c3"><h3><span>06</span>Skills</h3><p>{skills}</p></div>
+<div class="m r1">
+  <header>
+    <h1 class="name">{e(C.NAME_FIRST)} {e(C.NAME_LAST)}</h1>
+    <div class="roles">{roles}</div>
+  </header>
+  <section class="rule first"><h2 class="sec-head"><span class="n">01</span>Profile</h2>{profile}</section>
 </div>
+<div class="s r1 block"><h2>Contact</h2><address><dl>{contact}</dl></address></div>
+{sec_rule(2, "Australian Experience", "".join(job(*j) for j in C.AUSTRALIA), "m r2")}
+<div class="s r2 rule"><div class="block langs"><h2>Languages</h2>{langs}</div>
+  <div class="block"><h2>Skills</h2><ul>{skills}</ul></div></div>
+{sec_rule(3, "Design Experience", "".join(job(*j) for j in C.DESIGN), "m r3")}
+<div class="s r3 rule block"><h2>Education</h2>{edu}</div>
 """
     return page(css, body)
 
@@ -229,7 +245,7 @@ def page(css, body):
 <html lang="en"><head><meta charset="utf-8"><title>Victor Braga – CV</title>
 <meta name="author" content="Victor Braga">
 <style>{css}</style></head>
-<body><main class="page">{body}</main></body></html>
+<body><div class="page">{body}</div></body></html>
 """
 
 
@@ -241,8 +257,8 @@ def render(name, html_text):
                     "--no-pdf-header-footer", "--allow-file-access-from-files",
                     f"--print-to-pdf={out}", src.as_uri()],
                    check=True, capture_output=True)
-    pages = subprocess.run(["pdfinfo", str(out)], capture_output=True, text=True).stdout
-    n = int(next(l for l in pages.splitlines() if l.startswith("Pages:")).split()[1])
+    info = subprocess.run(["pdfinfo", str(out)], capture_output=True, text=True).stdout
+    n = int(next(l for l in info.splitlines() if l.startswith("Pages:")).split()[1])
     bbox = subprocess.run(["pdftotext", "-bbox", str(out), "-"], capture_output=True, text=True).stdout
     ys = [(float(a), float(b)) for a, b in re.findall(r'yMin="([\d.]+)" xMax="[\d.]+" yMax="([\d.]+)"', bbox)]
     top = min(a for a, _ in ys) * 25.4 / 72

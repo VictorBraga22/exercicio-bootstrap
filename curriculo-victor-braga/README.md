@@ -4,10 +4,10 @@ Pasta separada do resto do repositório.
 
 ## Para enviar
 - `Victor_Braga_CV_Typographic.pdf` – versão só texto: hierarquia por tamanho, peso e espaço; grid de 12 colunas (rótulos 3 / conteúdo 9).
-- `Victor_Braga_CV_Modernist.pdf` – versão modernista (Estilo Tipográfico Internacional – Müller-Brockmann, Vignelli): nome em display, régua com acento vermelho, seções numeradas, coluna de datas.
+- `Victor_Braga_CV_Modernist.pdf` – versão modernista (Estilo Tipográfico Internacional – Müller-Brockmann, Vignelli): composição assimétrica, painel lateral que sangra a página, nome em display, seções numeradas em vermelho; cada bloco lateral alinhado à régua da seção principal.
 - `Victor_Braga_CV.pdf` / `.docx` – versão simples para sites/ATS que pedem Word.
 
-Antes de enviar: trocar `[ADD PORTFOLIO LINK]` (em `design/content.py`, e em `gerar_cv.py` para o DOCX).
+Portfolio: https://www.behance.net/victorbragacsa (clicável nos PDFs de design).
 
 ## Como gerar de novo
 - Versões de design: `cd design && python3 build.py` (edite o texto em `design/content.py`).

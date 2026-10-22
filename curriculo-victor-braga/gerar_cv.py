@@ -85,9 +85,9 @@ def line(label, text):
 para("VICTOR BRAGA", size=20, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
 para("Graphic Designer | Front of House | Kitchen Hand | Brand Ambassador", size=12, color=ACCENT,
      align=WD_ALIGN_PARAGRAPH.CENTER, after=2)
-para("Fortitude Valley, Brisbane QLD | 0451 084 505 | victorbcsa@gmail.com",
+para("Brisbane QLD | 0451 084 505 | victorbcsa@gmail.com",
      size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
-para("Portfolio: [ADD PORTFOLIO LINK]", size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
+para("Portfolio: behance.net/victorbragacsa", size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
 
 # ---------- Resumo ----------
 heading("Profile")
