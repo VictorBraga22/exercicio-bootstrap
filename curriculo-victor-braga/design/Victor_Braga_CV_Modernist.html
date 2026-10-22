@@ -9,73 +9,90 @@
 @page { size: A4; margin: 0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { background: #fff; }
+:root {
+  --mt: 15mm; --mb: 13mm;
+  --ml: 12mm;        /* margem esquerda do texto lateral (painel sangra até a borda) */
+  --side: 40mm;      /* coluna de texto lateral */
+  --inset: 9mm;      /* respiro entre o texto lateral e a borda direita do painel */
+  --gap: 10mm;       /* do painel até a coluna principal */
+  --mr: 13mm;
+  --muted: #6b6b6b; --red: #E3241B; --panel: #F1F1EE; --ink: #111;
+}
 body {
   font-family: "CV Inter", sans-serif;
   font-feature-settings: "cv11" 1;
   -webkit-font-smoothing: antialiased;
-  color: #111;
+  color: var(--ink);
+  font-size: 8pt; line-height: 1.42;
   text-wrap: pretty;
 }
-.page { width: 210mm; height: 297mm; padding: var(--mt) var(--mx) var(--mb); }
-.grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gutter); }
-ul { list-style: none; }
-li { position: relative; padding-left: 3mm; }
-li::before { content: "–"; position: absolute; left: 0; color: var(--muted); }
-strong { font-weight: 600; }
-a { color: inherit; text-decoration: none; }
-.date, .tnum { font-variant-numeric: tabular-nums; }
-.nw { white-space: nowrap; }
-.muted { color: var(--muted); }
-h1, h2, h3 { font-weight: inherit; font-size: inherit; }
-address { font-style: normal; }
-
-:root { --mt: 16mm; --mb: 12mm; --mx: 15mm; --side: 40mm; --gap: 12mm;
-        --muted: #6b6b6b; --red: #E3241B; --panel: #F2F2F0; }
-body { font-size: 8pt; line-height: 1.36; }
-.page { position: relative; display: grid; grid-template-columns: var(--side) 1fr;
-        grid-template-rows: auto auto 1fr; column-gap: var(--gap); row-gap: 6.2mm;
-        align-items: start; }
-/* painel: sangra topo, base e esquerda; termina 5mm depois do texto lateral */
-.page::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0;
-                width: calc(var(--mx) + var(--side) + 5mm); background: var(--panel);
-                border-top: 5mm solid var(--red); }
-/* cada bloco lateral pendura na mesma linha horizontal da seção principal */
+.page {
+  position: relative; width: 210mm; height: 297mm;
+  padding: var(--mt) var(--mr) var(--mb) var(--ml);
+  display: grid; align-items: start;
+  grid-template-columns: var(--side) 1fr;
+  grid-template-rows: auto auto 1fr;
+  column-gap: calc(var(--inset) + var(--gap));
+  row-gap: 8.4mm;
+}
+/* painel: sangra topo, base e esquerda, com faixa vermelha no topo */
+.page::before {
+  content: ""; position: absolute; inset: 0 auto 0 0;
+  width: calc(var(--ml) + var(--side) + var(--inset));
+  background: var(--panel); border-top: 4mm solid var(--red);
+}
 .page > * { position: relative; }
 .m { grid-column: 2; } .s { grid-column: 1; }
 .r1 { grid-row: 1; } .r2 { grid-row: 2; } .r3 { grid-row: 3; }
-.s.r1 { padding-top: 1mm; }
-.rule { border-top: 0.75pt solid #111; padding-top: 1.6mm; }
+.rule { border-top: 0.75pt solid var(--ink); padding-top: 2mm; }
 
+ul { list-style: none; }
+strong { font-weight: 600; }
+a { color: inherit; text-decoration: none; }
+h1, h2 { font-weight: inherit; font-size: inherit; }
+address { font-style: normal; }
+.nw { white-space: nowrap; }
+.muted { color: var(--muted); }
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* cabeçalho */
 .name { font-weight: 700; font-size: 44pt; line-height: 0.9; letter-spacing: -0.045em;
-        word-spacing: 0.14em;
-        margin-left: -0.6mm; }
-.roles { margin-top: 3.6mm; font-size: 9.4pt; font-weight: 500; letter-spacing: -0.005em; }
+        word-spacing: 0.14em; margin-left: -0.6mm; }
+.roles { margin-top: 4mm; font-size: 9.4pt; font-weight: 500; letter-spacing: -0.005em; }
 .roles span { color: var(--red); margin: 0 1.6mm; font-weight: 400; }
 
-section.first { margin-top: 8.4mm; }
-.sec-head { display: flex; gap: 3mm; align-items: baseline; margin-bottom: 2.8mm; font-size: 7pt; font-weight: 600;
-            letter-spacing: 0.1em; text-transform: uppercase; }
-.sec-head, .block h2 { line-height: 1.36; }
-.sec-head .n { color: var(--red); letter-spacing: 0; font-variant-numeric: tabular-nums; }
-.lead { font-size: 8.8pt; line-height: 1.42; letter-spacing: -0.005em; }
-.lead + .lead { margin-top: 1.6mm; }
-.job + .job { margin-top: 2.8mm; }
-.job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; }
-.job-title { font-weight: 600; font-size: 9pt; }
-.date { color: var(--muted); white-space: nowrap; font-size: 7.8pt; }
-.org { color: var(--muted); margin: 0.2mm 0 1mm; }
-li + li { margin-top: 0.5mm; }
+/* títulos de seção: mesmo sistema nas duas colunas */
+.head { display: flex; gap: 2.6mm; align-items: baseline; margin-bottom: 3.2mm;
+        font-size: 7pt; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+        line-height: 1.45; }
+.head .n { color: var(--red); letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.head .dot { align-self: center; width: 1.5mm; height: 1.5mm; background: var(--red);
+             flex: none; }
 
-.block + .block { margin-top: 7mm; }
-.block h2 { font-size: 7pt; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
-            margin-bottom: 2.6mm; }
-.block dl dt { color: var(--muted); font-size: 7pt; }
-.block dl dd + dt { margin-top: 1.6mm; }
-.langs div { display: flex; justify-content: space-between; }
-.langs div + div { margin-top: 0.6mm; }
-.s li { padding-left: 0; } .s li::before { content: none; }
-.s li + li { margin-top: 0.6mm; }
-.edu + .edu { margin-top: 2.4mm; }
+/* coluna principal */
+.profile { margin-top: 8mm; }
+.lead { font-size: 8.5pt; line-height: 1.48; letter-spacing: -0.005em; }
+.lead + .lead { margin-top: 2mm; }
+.job + .job { margin-top: 3.8mm; }
+.job-title { font-weight: 600; font-size: 9pt; line-height: 1.35; }
+.org { color: var(--muted); margin: 0.4mm 0 1.4mm; }
+.org .date { color: var(--ink); font-variant-numeric: tabular-nums; }
+.org .sep { margin: 0 1.4mm; }
+.m li { position: relative; padding-left: 3.2mm; }
+.m li::before { content: "–"; position: absolute; left: 0; color: var(--muted); }
+.m li + li { margin-top: 0.8mm; }
+
+/* coluna lateral */
+.s .block + .block { margin-top: 7mm; }
+.s dt { color: var(--muted); font-size: 7pt; }
+.s dd + dt { margin-top: 2.2mm; }
+.s dd { line-height: 1.35; }
+.langs li { display: flex; justify-content: space-between; }
+.s li + li { margin-top: 1mm; }
+.edu + .edu { margin-top: 3.2mm; }
+.edu strong { display: block; line-height: 1.35; }
+.edu .tnum { margin: 0.4mm 0 0.8mm; }
+.contact { padding-top: 1.4mm; }
 </style></head>
 <body><div class="page">
 <div class="m r1">
@@ -83,36 +100,14 @@ li + li { margin-top: 0.5mm; }
     <h1 class="name">Victor Braga</h1>
     <div class="roles">Graphic Designer<span>/</span>Front of House<span>/</span>Kitchen Hand<span>/</span>Brand Ambassador</div>
   </header>
-  <section class="rule first"><h2 class="sec-head"><span class="n">01</span>Profile</h2><p class="lead">Graphic designer with 7 years of agency experience in Brazil, producing print and <span class="nw">point-of-sale</span> material, <span class="nw">large-format</span> signage and digital artwork for brands such as Cinemark, Wickbold and Seven Boys. Looking for a role in screen printing, print production, signage or a creative studio.</p><p class="lead">Now based in Brisbane, with 2026 experience in Australian hospitality and promotions. Worked front of house, kitchen and pizza chef roles, and as a brand ambassador for Activ8 at Woolworths activations and Riverfire. Trusted to open and close venues, manage stock and lead <span class="nw">on-site</span> activations.</p></section>
+  <section class="rule profile"><h2 class="head"><span class="n">01</span>Profile</h2><p class="lead">Graphic designer with 7 years of agency experience in Brazil, producing print and <span class="nw">point-of-sale</span> material, <span class="nw">large-format</span> signage and digital artwork for brands such as Cinemark, Wickbold and Seven Boys. Looking for a role in screen printing, print production, signage or a creative studio.</p><p class="lead">Now based in Brisbane, with 2026 experience in Australian hospitality and promotions: front of house, kitchen and pizza chef roles, and brand ambassador work for Activ8. Trusted to open and close venues, manage stock and lead <span class="nw">on-site</span> activations.</p></section>
 </div>
-<div class="s r1 block"><h2>Contact</h2><address><dl><dt>Location</dt><dd>Brisbane QLD</dd><dt>Phone</dt><dd><a href="tel:+61451084505">0451 084 505</a></dd><dt>Email</dt><dd><a href="mailto:victorbcsa@gmail.com">victorbcsa@gmail.com</a></dd><dt>Portfolio</dt><dd><a href="https://www.behance.net/victorbragacsa">behance.net/<wbr>victorbragacsa</a></dd></dl></address></div>
-<section class="rule m r2"><h2 class="sec-head"><span class="n">02</span>Australian Experience</h2><div class="job">
-  <div class="job-head"><span class="job-title">Front of House</span><span class="date">2026</span></div>
-  <div class="org">Austino Cuisine – Maroochydore Club, Sunshine Coast</div>
-  <ul><li>Served food and drinks, took orders accurately and kept the floor clean and presentable.</li><li>Organised food distribution from the pass and supported the kitchen and dishwashing station when needed.</li></ul>
-</div><div class="job">
-  <div class="job-head"><span class="job-title">Front of House / Kitchen Hand / Pizza Chef</span><span class="date">2026</span></div>
-  <div class="org">Baretto Pizza, Brisbane</div>
-  <ul><li>Opened and closed the restaurant and kitchen, including all cleaning procedures.</li><li>Managed stock, ordering and storage, plus Uber Eats and takeaway orders.</li><li>Prepared ingredients and cooked pizzas during busy services, following food safety standards.</li></ul>
-</div><div class="job">
-  <div class="job-head"><span class="job-title">Brand Ambassador &amp; Promotional Staff</span><span class="date">2026</span></div>
-  <div class="org">Activ8, Brisbane</div>
-  <ul><li><strong>Woolworths – Product Sampling &amp; <span class="nw">On-site</span> Activation Lead.</strong> Engaged customers, introduced products and handed out samples. Led on site, managing stock and deliveries, making operational decisions and reporting to campaign coordinators.</li><li><strong>Australian Retirement Trust – Mascot Minder, <span class="nw">Riverfire 2026</span>.</strong> Accompanied the mascot Artie, supported interactions with the public and guided it safely through large crowds.</li><li><strong>Street &amp; Event Promotion.</strong> Handed out flyers in busy pedestrian areas and explained event details to the public.</li></ul>
-</div></section>
-<div class="s r2 rule"><div class="block langs"><h2>Languages</h2><div><span>English</span><span class='muted'>Fluent</span></div><div><span>Portuguese</span><span class='muted'>Native</span></div><div><span>Spanish</span><span class='muted'>Basic</span></div></div>
-  <div class="block"><h2>Skills</h2><ul><li>Meeting deadlines</li><li>Attention to detail</li><li>Teamwork</li><li>Customer service</li><li>Stock control</li><li><span class="nw">Hands-on</span> and physical work</li></ul></div></div>
-<section class="rule m r3"><h2 class="sec-head"><span class="n">03</span>Design Experience</h2><div class="job">
-  <div class="job-head"><span class="job-title">Senior Art Director / Graphic Designer</span><span class="date"><span class="nw">Dec 2020</span> – <span class="nw">Feb 2026</span></span></div>
-  <div class="org">Essenza Comunicação, São Paulo</div>
-  <ul><li>Designed key visuals, <span class="nw">in-store</span> and <span class="nw">point-of-sale</span> material, <span class="nw">large-format</span> outdoor ads and social content for Cinemark (Brazil and Argentina), Wickbold and Seven Boys.</li><li>Lead designer on brand collaborations, incl. Seven Boys x Sonic, Seven Boys x GOAT and Cinemark with <span class="nw">Coca-Cola</span>, Monster Energy and Free Fire.</li><li>Created and named the Cinemark Club loyalty program, featured as a major sponsor at <span class="nw">CCXP 2022</span>.</li><li>Adapted each campaign into multiple print and digital formats, often on tight deadlines.</li></ul>
-</div><div class="job">
-  <div class="job-head"><span class="job-title">Graphic Designer</span><span class="date"><span class="nw">Mar 2019</span> – <span class="nw">Sep 2020</span></span></div>
-  <div class="org">Do It Comunicação, Petrópolis</div>
-  <ul><li>Designed and prepared print files for flyers, posters, menus, labels and signage for supermarkets, craft breweries (Brewpoint, Odin, Da Corte) and restaurants.</li></ul>
-</div><div class="job">
-  <div class="job-head"><span class="job-title">Photographer (Freelance)</span><span class="date"><span class="nw">Feb 2017</span> – <span class="nw">Mar 2019</span></span></div>
-  <div class="org"><span class="nw">Self-employed</span>, Petrópolis</div>
-  <ul><li>Product, food and event photography for local businesses, incl. lighting, shooting and retouching.</li></ul>
-</div></section>
-<div class="s r3 rule block"><h2>Education</h2><div class="edu"><strong>Graphit School of Design</strong><div class="muted tnum">2017 – 2018<br>Petrópolis, Brazil</div><div>Graphic Design, Advertising Design, Web Design, Digital Illustration, Photo Retouching</div></div><div class="edu"><strong>Lordstown High School</strong><div class="muted tnum">2015<br>Ohio, USA</div><div>Exchange program</div></div></div>
+<div class="s r1 contact"><h2 class="head"><span class="dot"></span>Contact</h2><address><dl><dt>Location</dt><dd>Brisbane QLD</dd><dt>Phone</dt><dd><a href="tel:+61451084505">0451 084 505</a></dd><dt>Email</dt><dd><a href="mailto:victorbcsa@gmail.com">victorbcsa@gmail.com</a></dd><dt>Portfolio</dt><dd><a href="https://www.behance.net/victorbragacsa">behance.net/<wbr>victorbragacsa</a></dd></dl></address></div>
+<section class="m r2 rule"><h2 class="head"><span class="n">02</span>Australian Experience</h2><div class="job"><div class="job-title">Front of House</div><div class="org">Austino Cuisine – Maroochydore Club, Sunshine Coast<span class="sep">·</span><span class="date nw">2026</span></div><ul><li>Served food and drinks, took orders accurately and kept the floor clean and presentable.</li><li>Organised the pass in busy services and supported the kitchen and dishwashing station.</li></ul></div><div class="job"><div class="job-title">Front of House / Kitchen Hand / Pizza Chef</div><div class="org">Baretto Pizza, Brisbane<span class="sep">·</span><span class="date nw">2026</span></div><ul><li>Opened and closed the restaurant and kitchen, including all cleaning procedures.</li><li>Managed stock, ordering and storage, plus Uber Eats and takeaway orders.</li><li>Prepared ingredients and cooked pizzas in busy services, following food safety standards.</li></ul></div><div class="job"><div class="job-title">Brand Ambassador &amp; Promotional Staff</div><div class="org">Activ8, Brisbane<span class="sep">·</span><span class="date nw">2026</span></div><ul><li><strong>Woolworths – Product Sampling &amp; <span class="nw">On-site</span> Activation Lead.</strong> Engaged customers, introduced products and handed out samples. Led on site: stock, deliveries, operational decisions and reporting to campaign coordinators.</li><li><strong>Australian Retirement Trust – Mascot Minder, <span class="nw">Riverfire 2026</span>.</strong> Accompanied the mascot Artie, supported interactions with the public and guided it safely through crowds.</li><li><strong>Street &amp; Event Promotion.</strong> Handed out flyers in busy areas and explained event details.</li></ul></div></section>
+<div class="s r2 rule">
+  <div class="block"><h2 class="head"><span class="dot"></span>Languages</h2><ul class="langs"><li><span>English</span><span class='muted'>Fluent</span></li><li><span>Portuguese</span><span class='muted'>Native</span></li><li><span>Spanish</span><span class='muted'>Basic</span></li></ul></div>
+  <div class="block"><h2 class="head"><span class="dot"></span>Skills</h2><ul><li>Meeting deadlines</li><li>Attention to detail</li><li>Teamwork</li><li>Customer service</li><li>Stock control</li><li><span class="nw">Hands-on</span> and physical work</li></ul></div>
+</div>
+<section class="m r3 rule"><h2 class="head"><span class="n">03</span>Design Experience</h2><div class="job"><div class="job-title">Senior Art Director / Graphic Designer</div><div class="org">Essenza Comunicação, São Paulo<span class="sep">·</span><span class="date nw">Dec 2020 – Feb 2026</span></div><ul><li>Designed key visuals, <span class="nw">in-store</span> and <span class="nw">point-of-sale</span> material, <span class="nw">large-format</span> outdoor ads and social content for Cinemark (Brazil and Argentina), Wickbold and Seven Boys.</li><li>Lead designer on brand collaborations, incl. Seven Boys x Sonic, Seven Boys x GOAT and Cinemark with <span class="nw">Coca-Cola</span>, Monster Energy and Free Fire.</li><li>Created and named the Cinemark Club loyalty program, a major sponsor at <span class="nw">CCXP 2022</span>.</li><li>Adapted each campaign into multiple print and digital formats, often on tight deadlines.</li></ul></div><div class="job"><div class="job-title">Graphic Designer</div><div class="org">Do It Comunicação, Petrópolis<span class="sep">·</span><span class="date nw">Mar 2019 – Sep 2020</span></div><ul><li>Designed and prepared print files for flyers, posters, menus, labels and signage for supermarkets, craft breweries (Brewpoint, Odin, Da Corte) and restaurants.</li></ul></div><div class="job"><div class="job-title">Photographer (Freelance)</div><div class="org"><span class="nw">Self-employed</span>, Petrópolis<span class="sep">·</span><span class="date nw">Feb 2017 – Mar 2019</span></div><ul><li>Product, food and event photography for local businesses, incl. lighting and retouching.</li></ul></div></section>
+<div class="s r3 rule"><h2 class="head"><span class="dot"></span>Education</h2><div class="edu"><strong>Graphit School of Design</strong><div class="muted tnum">2017 – 2018<br>Petrópolis, Brazil</div><div>Graphic Design, Advertising Design, Web Design, Digital Illustration, Photo Retouching</div></div><div class="edu"><strong>Lordstown High School</strong><div class="muted tnum">2015<br>Ohio, USA</div><div>Exchange program</div></div></div>
 </div></body></html>
