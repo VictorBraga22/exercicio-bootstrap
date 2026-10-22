@@ -15,7 +15,7 @@ ACCENT = RGBColor(0x1F, 0x4E, 0x79)
 doc = Document()
 sec = doc.sections[0]
 sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)  # A4 (padrão na Austrália)
-sec.top_margin = sec.bottom_margin = Cm(1.5)
+sec.top_margin = sec.bottom_margin = Cm(1.3)
 sec.left_margin = sec.right_margin = Cm(1.8)
 
 normal = doc.styles["Normal"]
@@ -83,7 +83,7 @@ def line(label, text):
 
 # ---------- Cabeçalho ----------
 para("VICTOR BRAGA", size=20, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
-para("Graphic Designer | Print & Production", size=12, color=ACCENT,
+para("Graphic Designer | Front of House | Kitchen Hand | Brand Ambassador", size=12, color=ACCENT,
      align=WD_ALIGN_PARAGRAPH.CENTER, after=2)
 para("Fortitude Valley, Brisbane QLD | 0451 084 505 | victorbcsa@gmail.com",
      size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
@@ -95,9 +95,10 @@ para("Graphic designer with 7 years of agency experience in Brazil, producing pr
      "material, large-format signage and digital artwork for brands such as Cinemark, "
      "Wickbold and Seven Boys. Looking for a role in screen printing, print production, "
      "signage or a creative studio.", after=3)
-para("Now based in Brisbane, with 2026 experience in Australian hospitality across front of "
-     "house, kitchen and pizza chef roles. Trusted to open and close venues, manage stock and "
-     "work every station during busy services.", after=2)
+para("Now based in Brisbane, with 2026 experience in Australian hospitality and promotions. "
+     "Worked front of house, kitchen and pizza chef roles, and as a brand ambassador for Activ8 "
+     "at Woolworths activations and Riverfire. Trusted to open and close venues, manage stock "
+     "and lead on-site activations.", after=2)
 
 # ---------- Experiência ----------
 heading("Australian Work Experience")
@@ -112,6 +113,18 @@ bullets([
     "Opened and closed the restaurant and kitchen, including all cleaning procedures.",
     "Managed stock, ordering and storage, plus Uber Eats and takeaway orders.",
     "Prepared ingredients and cooked pizzas during busy services, following food safety standards.",
+])
+
+job("Brand Ambassador & Promotional Staff", "Activ8, Brisbane", "2026")
+bullets([
+    "Woolworths – Product Sampling & On-site Activation Lead: engaged customers, introduced "
+    "products and handed out samples. Led on site, managing stock and deliveries, making "
+    "operational decisions and reporting to campaign coordinators.",
+    "Australian Retirement Trust – Mascot Minder, Riverfire 2026 (Brisbane Festival): "
+    "accompanied the mascot Artie, supported interactions with the public and guided it "
+    "safely through large crowds.",
+    "Street & Event Promotion: handed out flyers in busy pedestrian areas and explained event "
+    "details to the public.",
 ])
 
 heading("Design Experience")
@@ -130,7 +143,6 @@ job("Graphic Designer", "Do It Comunicação, Petrópolis", "Mar 2019 – Sep 20
 bullets([
     "Designed and prepared print files for flyers, posters, menus, labels and signage for "
     "supermarkets, craft breweries (Brewpoint, Odin, Da Corte) and restaurants.",
-    "Worked across retail, hospitality, healthcare and service clients.",
 ])
 
 job("Photographer (Freelance)", "Petrópolis", "Feb 2017 – Mar 2019")
