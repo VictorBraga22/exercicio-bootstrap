@@ -2,7 +2,7 @@
 
     python3 build.py
 
-Saída (na pasta acima): Victor_Braga_CV_Modernist.pdf
+Saída (na pasta acima): Victor_Braga_Curriculum_Vitae.pdf
 Fontes: Inter (TTF estático em fonts/) — evita fontes Type 3 no PDF.
 O build falha se o PDF passar de 1 página ou se a margem inferior real do texto
 ficar abaixo de MIN_MARGIN_MM.
@@ -213,4 +213,4 @@ def render(name, html_text):
 
 
 if __name__ == "__main__":
-    render("Victor_Braga_CV_Modernist", build())
+    render("Victor_Braga_Curriculum_Vitae", build())

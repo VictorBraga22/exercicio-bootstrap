@@ -3,7 +3,7 @@
 Pasta separada do resto do repositório.
 
 ## Para enviar
-- `Victor_Braga_CV_Modernist.pdf` – versão principal (Estilo Tipográfico Internacional – Müller-Brockmann, Vignelli): composição assimétrica, painel lateral que sangra a página, nome em display, seções numeradas em vermelho; cada bloco lateral alinhado à régua da seção principal.
+- `Victor_Braga_Curriculum_Vitae.pdf` – versão principal (Estilo Tipográfico Internacional – Müller-Brockmann, Vignelli): composição assimétrica, painel lateral que sangra a página, nome em display, seções numeradas em vermelho; cada bloco lateral alinhado à régua da seção principal.
 - `Victor_Braga_CV.pdf` / `.docx` – versão simples para sites/ATS que pedem Word.
 
 Portfolio: https://www.behance.net/victorbragacsa (clicável no PDF).
