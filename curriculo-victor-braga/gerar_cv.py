@@ -93,13 +93,27 @@ para("Portfolio: [ADD PORTFOLIO LINK]", size=10, align=WD_ALIGN_PARAGRAPH.CENTER
 heading("Profile")
 para("Graphic designer with 7 years of agency experience in Brazil, producing print and point-of-sale "
      "material, large-format signage and digital artwork for brands such as Cinemark, "
-     "Wickbold and Seven Boys. Now based in Brisbane, with 2026 experience in Australian "
-     "hospitality where I opened and closed venues, handled stock and worked every station. "
-     "Comfortable at the computer and on the floor: I can prepare artwork, check it before it "
-     "goes to print and help on the production side. Looking for a role in screen printing, "
-     "print production, signage or a creative studio.", after=2)
+     "Wickbold and Seven Boys. Looking for a role in screen printing, print production, "
+     "signage or a creative studio.", after=3)
+para("Now based in Brisbane, with 2026 experience in Australian hospitality across front of "
+     "house, kitchen and pizza chef roles. Trusted to open and close venues, manage stock and "
+     "work every station during busy services.", after=2)
 
 # ---------- Experiência ----------
+heading("Australian Work Experience")
+job("Front of House", "Austino Cuisine – Maroochydore Club, Sunshine Coast", "2026")
+bullets([
+    "Served food and drinks, took orders accurately and kept the floor clean and presentable.",
+    "Organised food distribution from the pass and supported the kitchen and dishwashing station when needed.",
+])
+
+job("Front of House / Kitchen Hand / Pizza Chef", "Baretto Pizza, Brisbane", "2026")
+bullets([
+    "Opened and closed the restaurant and kitchen, including all cleaning procedures.",
+    "Managed stock, ordering and storage, plus Uber Eats and takeaway orders.",
+    "Prepared ingredients and cooked pizzas during busy services, following food safety standards.",
+])
+
 heading("Design Experience")
 job("Senior Art Director / Graphic Designer", "Essenza Comunicação, São Paulo",
     "Dec 2020 – Feb 2026")
@@ -124,22 +138,10 @@ bullets([
     "Product, food and event photography for local businesses, incl. lighting, shooting and retouching.",
 ])
 
-heading("Australian Work Experience")
-job("Front of House / Kitchen Hand / Pizza Chef", "Baretto Pizza, Brisbane and "
-    "Austino Cuisine – Maroochydore Club, Sunshine Coast", "2026")
-bullets([
-    "Trusted to open and close the venue, manage stock and place orders.",
-    "Worked across front of house, kitchen and pizza oven during busy services, "
-    "following food safety and hygiene standards.",
-])
-
 # ---------- Skills ----------
 heading("Skills")
-line("Software", "Adobe Photoshop, Illustrator, Lightroom, After Effects, Figma")
-line("Design", "Print design, vector artwork, logo and brand identity, signage and large format, "
-     "posters and flyers, illustration, photo retouching, photography")
-line("Workplace", "Meeting deadlines, attention to detail, teamwork, customer service, "
-     "stock control, hands-on and physical work")
+para("Meeting deadlines, attention to detail, teamwork, customer service, stock control, "
+     "hands-on and physical work", after=1)
 
 # ---------- Educação ----------
 heading("Education")
